@@ -1,38 +1,36 @@
-<!DOCTYPE html>
-<html>
-<body style="font-family: Arial; background:#f4f4f4; padding:20px">
-
-<h2>Certificate Verification</h2>
-<p id="output">Verifying certificate...</p>
-
 <script>
 const sheetId = "1bTIBgInp4B5I-CK1F0b55rJtlOhIza_I";
 const sheetName = "Sheet1";
-const url = "https://opensheet.elk.sh/" + sheetId + "/" + sheetName;
+
+const csvUrl =
+  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
 const certId = new URLSearchParams(window.location.search)
   .get("id")
   ?.trim();
 
-fetch(url)
-.then(res => res.json())
-.then(data => {
-  const row = data.find(r => {
-  const sheetId =
-    (r["CERTIFICATE ID"] ||
-     r["Certificate ID"] ||
-     "").toString().trim();
+fetch(csvUrl)
+  .then(res => res.text())
+  .then(text => {
+    const rows = text.split("\n").map(r => r.split(","));
+    const headers = rows[0];
+    const data = rows.slice(1);
 
-  return sheetId === certId;
-});
-  document.getElementById("output").innerHTML = row
-    ? `<b>Name:</b> ${row.NAME}<br>
-       <b>Event:</b> ${row.EVENT}<br>
-       <b>Date:</b> ${row.DATE}<br>
-       <b>Status:</b> ${row.STATUS}`
-    : "❌ Invalid Certificate";
-});
+    const idIndex = headers.indexOf("CERTIFICATE ID");
+    const nameIndex = headers.indexOf("NAME");
+    const eventIndex = headers.indexOf("EVENT");
+    const dateIndex = headers.indexOf("DATE");
+    const statusIndex = headers.indexOf("STATUS");
+
+    const match = data.find(r =>
+      r[idIndex]?.trim() === certId
+    );
+
+    document.getElementById("output").innerHTML = match
+      ? `<b>Name:</b> ${match[nameIndex]}<br>
+         <b>Event:</b> ${match[eventIndex]}<br>
+         <b>Date:</b> ${match[dateIndex]}<br>
+         <b>Status:</b> ${match[statusIndex]}`
+      : "❌ Invalid Certificate";
+  });
 </script>
-
-</body>
-</html>
