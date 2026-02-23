@@ -15,7 +15,10 @@ const certId = new URLSearchParams(window.location.search).get("id");
 fetch(url)
 .then(res => res.json())
 .then(data => {
-  const row = data.find(r => r["CERTIFICATE ID"] === certId);
+  const row = data.find(r =>
+  r["CERTIFICATE ID"] === certId ||
+  r["Certificate ID"] === certId
+);
   document.getElementById("output").innerHTML = row
     ? `<b>Name:</b> ${row.NAME}<br>
        <b>Event:</b> ${row.EVENT}<br>
