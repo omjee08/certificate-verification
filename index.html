@@ -38,7 +38,9 @@ if (!certId) {
           found = {
             name: r.c[2]?.v,
             event: r.c[3]?.v,
-            date: r.c[4]?.v,
+           date: r.c[4]?.v instanceof Date
+  ? r.c[4].v.toLocaleDateString("en-GB")
+  : r.c[4]?.v,
             status: r.c[5]?.v
           };
         }
