@@ -1,44 +1,7 @@
+<h2>Certificate Verification</h2>
+<p id="output">JS not running</p>
+
 <script>
-const sheetId = "1bTIBgInp4B5I-CK1F0b55rJtlOhIza_I";
-const sheetName = "Sheet1";
-
-const queryUrl =
-  `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}&tqx=out:json`;
-
-const certId = new URLSearchParams(window.location.search)
-  .get("id")
-  ?.trim();
-
-fetch(queryUrl)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    const rows = json.table.rows;
-
-    let found = null;
-
-    rows.forEach(r => {
-      const sheetCertId = r.c[1]?.v?.toString().trim();
-      if (sheetCertId === certId) {
-        found = {
-          name: r.c[2]?.v,
-          event: r.c[3]?.v,
-          date: r.c[4]?.v,
-          status: r.c[5]?.v
-        };
-      }
-    });
-
-    document.getElementById("output").innerHTML = found
-      ? `<b>Name:</b> ${found.name}<br>
-         <b>Event:</b> ${found.event}<br>
-         <b>Date:</b> ${found.date}<br>
-         <b>Status:</b> ${found.status}`
-      : "❌ Invalid Certificate";
-  })
-  .catch(err => {
-    document.getElementById("output").innerText =
-      "Error loading certificate data";
-    console.error(err);
-  });
+document.getElementById("output").innerText =
+  "JavaScript is working ✅";
 </script>
