@@ -9,13 +9,22 @@
   <h1>Certificate Verification</h1>
   <p id="output">Page loaded</p>
 
- <script>
-const certId = new URLSearchParams(window.location.search).get("id");
+<script>
+const url =
+  "https://docs.google.com/spreadsheets/d/1bTIBgInp4B5I-CK1F0b55rJtlOhIza_I/gviz/tq?sheet=Sheet1";
 
-document.getElementById("output").innerText =
-  certId
-    ? "Certificate ID received: " + certId
-    : "No Certificate ID in URL";
+fetch(url)
+  .then(res => res.text())
+  .then(text => {
+    document.getElementById("output").innerText =
+      "Google Sheet data loaded ✅";
+    console.log(text);
+  })
+  .catch(err => {
+    document.getElementById("output").innerText =
+      "Failed to load Google Sheet ❌";
+    console.error(err);
+  });
 </script>
 
 </body>
