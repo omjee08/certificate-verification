@@ -10,21 +10,52 @@
   <p id="output">Page loaded</p>
 
 <script>
-const url =
-  "https://docs.google.com/spreadsheets/d/1bTIBgInp4B5I-CK1F0b55rJtlOhIza_I/gviz/tq?sheet=Sheet1";
+const sheetId = "1bTIBgInp4B5I-CK1F0b55rJtlOhIza_I";
+const sheetName = "Sheet1";
 
-fetch(url)
-  .then(res => res.text())
-  .then(text => {
-    document.getElementById("output").innerText =
-      "Google Sheet data loaded ✅";
-    console.log(text);
-  })
-  .catch(err => {
-    document.getElementById("output").innerText =
-      "Failed to load Google Sheet ❌";
-    console.error(err);
-  });
+const certId = new URLSearchParams(window.location.search)
+  .get("id")
+  ?.trim();
+
+if (!certId) {
+  document.getElementById("output").innerText =
+    "No Certificate ID in URL ❌";
+} else {
+  const url =
+    `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}`;
+
+  fetch(url)
+    .then(res => res.text())
+    .then(text => {
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      const rows = json.table.rows;
+
+      let found = null;
+
+      rows.forEach(r => {
+        const sheetCertId = r.c[1]?.v?.toString().trim();
+        if (sheetCertId === certId) {
+          found = {
+            name: r.c[2]?.v,
+            event: r.c[3]?.v,
+            date: r.c[4]?.v,
+            status: r.c[5]?.v
+          };
+        }
+      });
+
+      document.getElementById("output").innerHTML = found
+        ? `<b>Name:</b> ${found.name}<br>
+           <b>Event:</b> ${found.event}<br>
+           <b>Date:</b> ${found.date}<br>
+           <b>Status:</b> ${found.status}`
+        : "❌ Invalid Certificate";
+    })
+    .catch(() => {
+      document.getElementById("output").innerText =
+        "Error loading data ❌";
+    });
+}
 </script>
 
 </body>
