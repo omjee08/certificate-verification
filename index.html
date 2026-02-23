@@ -9,10 +9,14 @@
   <h1>Certificate Verification</h1>
   <p id="output">Page loaded</p>
 
-  <script>
-    document.getElementById("output").innerText =
-      "JavaScript is working ✅";
-  </script>
+ <script>
+const certId = new URLSearchParams(window.location.search).get("id");
+
+document.getElementById("output").innerText =
+  certId
+    ? "Certificate ID received: " + certId
+    : "No Certificate ID in URL";
+</script>
 
 </body>
 </html>
