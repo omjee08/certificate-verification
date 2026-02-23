@@ -34,17 +34,14 @@ if (!certId) {
 
       rows.forEach(r => {
         const sheetCertId = r.c[1]?.v?.toString().trim();
-        date: (() => {
-  const raw = r.c[4]?.v;
-  if (typeof raw === "string" && raw.startsWith("Date")) {
-    const parts = raw.match(/\d+/g);
-    const year = parts[0];
-    const month = String(Number(parts[1]) + 1).padStart(2, "0");
-    const day = String(parts[2]).padStart(2, "0");
-    return `${day}-${month}-${year}`;
-  }
-  return raw;
-})(),
+        if (sheetCertId === certId) {
+          found = {
+            name: r.c[2]?.v,
+            event: r.c[3]?.v,
+            date: r.c[4]?.v,
+            status: r.c[5]?.v
+          };
+        }
       });
 
       document.getElementById("output").innerHTML = found
